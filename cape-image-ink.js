@@ -59,7 +59,7 @@
    DOVE VA
    Pages -> The Cape Studio -> Settings -> Custom code -> Before </body> tag,
    come ultima riga:
-     <script defer src="https://cdn.jsdelivr.net/gh/cash9086/cape-image-ink@v1.0.0/cape-image-ink.js"><\/script>
+     <script defer src="https://cdn.jsdelivr.net/gh/cash9086/cape-image-ink@v1.1.0/cape-image-ink.js"><\/script>
    (la barra rovesciata li' sopra serve solo qui dentro. Se questo file finisce
    incollato DENTRO un tag script invece che linkato, un tag di chiusura scritto
    per esteso lo chiuderebbe a meta' file: il browser prende il resto per testo
@@ -134,7 +134,25 @@ var BRUSH_AMT    = 0.34;  /* colorante per splat: piu' alto = tratto piu' pieno 
 var BRUSH_PULL   = 0.24;  /* quanta velocita' della mano passa al fluido. Alto =
                              l'inchiostro scappa avanti alla mano; basso = resta
                              incollato al puntatore.                          */
-var BRUSH_DRY    = 1.45;  /* quanto asciuga: piu' alto = il tratto svanisce prima */
+var BRUSH_DRY    = 2.80;  /* quanto asciuga: piu' alto = il tratto svanisce prima.
+                             E' la manopola dell'AREA, non dello spessore. Il
+                             colorante decade come e^(-BRUSH_DRY*t) e la maschera
+                             lo tiene visibile finche' c > 0.197 (INK_K 2.6,
+                             soglia smoothstep 0.40): a 1.45 un picco di passata
+                             restava li' ~1.4 s, e ripassarci sopra raddoppiava c
+                             aggiungendone altri ~0.5 — gironzolando col mouse
+                             l'immagine finiva coperta, e a quel punto
+                             l'inversione non e' piu' un segno sopra una
+                             fotografia, e' un filtro. A 2.8 la striscia vive
+                             ~0.73 s: resta un gesto dietro al cursore.
+                             Tocca solo il colorante, non il campo di moto
+                             (VEL_DISS e' separato), quindi il tratto conserva
+                             identico il suo carattere — si muove, si arriccia e
+                             cola come prima, semplicemente svanisce prima.
+                             Oltre 4 non si va: il passo del tratto e' una
+                             frazione fissa del raggio, e se il colorante muore
+                             prima che lo splat successivo lo raggiunga la linea
+                             si spezza in una fila di punti staccati.           */
 var BRUSH_GRAVITY= 0.30;  /* quanto cola. Qui si vede il non newtoniano: il denso
                              scende, il velo resta sospeso.                   */
 var BRUSH_CURL   = 0.09;  /* vorticita': quanto si arriccia sui bordi         */

@@ -34,6 +34,42 @@ il peso non e' proporzionale alla quantita', ci va quasi col cubo: **il denso
 cola, il velo resta sospeso.** E' la ragione per cui questo inchiostro fa macchie
 e non sfumature.
 
+### Quanto vive il tratto — `BRUSH_DRY`
+
+La fisica dice come si muove l'inchiostro. Quanto ne resta a schermo lo decide
+una manopola sola. Il colorante decade come `e^(-BRUSH_DRY*t)` e la maschera lo
+tiene visibile finche' `c > 0.197` (`INK_K` 2.6, soglia `smoothstep(0.40, ...)`).
+
+Alla prima versione `BRUSH_DRY` stava a `1.45`: un picco di passata restava li'
+**~1.4 s**, e ripassarci sopra raddoppiava `c` aggiungendone altri ~0.5. Chi
+gironzolava col mouse non lasciava un segno, **dipingeva** — in pochi secondi il
+quadro era coperto, e a quel punto l'inversione non si legge piu' come un segno
+sopra una fotografia: si legge come un filtro. E' lo stesso fallimento che qui
+sopra si argomenta sulla tinta, applicato all'area invece che al colore.
+
+A `2.80` la striscia vive **~0.73 s**. L'immagine e' il soggetto, l'inchiostro e'
+il gesto: in ogni istante deve restare una striscia dietro al cursore, e la foto
+deve tornare sé stessa entro circa un secondo da quando la mano si ferma.
+
+E' la manopola giusta perche' tocca **solo** il colorante, non il campo di moto
+(`VEL_DISS` e' separato): il tratto conserva identico il suo carattere — si
+muove, si arriccia e cola come prima, semplicemente svanisce prima. Abbassare
+`BRUSH_AMT` avrebbe fatto un'altra cosa, cioe' un segno *pallido*, e un segno
+pallido tradisce il senso dell'effetto.
+
+Il tetto e' **4**: il passo del tratto e' una frazione fissa del raggio
+(`brushStep()`), quindi se il colorante muore prima che lo splat successivo lo
+raggiunga la linea si spezza in una fila di punti staccati. Se lo vedi, sei
+andato troppo su.
+
+| `BRUSH_DRY` | vita del tratto | |
+|---|---|---|
+| `1.45` | ~1.4 s | com'era in `v1.0.0` |
+| `2.0` | ~1.0 s | assaggio |
+| **`2.80`** | **~0.73 s** | **da `v1.1.0`** |
+| `3.6` | ~0.56 s | secco, molto grafico |
+| `4.5` | ~0.45 s | oltre il tetto: il tratto si spezza |
+
 ---
 
 ## L'inversione — la domanda vera
@@ -174,7 +210,7 @@ messo in **`cash9086/header`**, che e' gia' pubblico e serve gli altri due.
    come ultima riga:
 
 ```html
-<script defer src="https://cdn.jsdelivr.net/gh/cash9086/cape-image-ink@v1.0.0/cape-image-ink.js"></script>
+<script defer src="https://cdn.jsdelivr.net/gh/cash9086/cape-image-ink@v1.1.0/cape-image-ink.js"></script>
 ```
 
 Il CSS se lo scrive da solo: non c'e' niente da mettere nell'`<head>`. Non c'e'
@@ -183,7 +219,7 @@ nessun ordine da rispettare rispetto agli altri script della pagina.
 `SHA` sono i quaranta caratteri del commit: e' immutabile, quindi la cache di
 jsDelivr non e' mai un problema e non c'e' niente da svuotare. In sviluppo si
 puo' puntare a `@main` e svuotare a mano aprendo una volta
-`https://purge.jsdelivr.net/gh/cash9086/cape-image-ink@v1.0.0/cape-image-ink.js` — comodo
+`https://purge.jsdelivr.net/gh/cash9086/cape-image-ink@v1.1.0/cape-image-ink.js` — comodo
 mentre si prova, da non lasciare in produzione.
 
 ### Su quali immagini agisce
@@ -239,7 +275,7 @@ che si toccano davvero:
 | `BUSY_SEL` | quando ritirare l'inchiostro. Vuoto = mai, nemmeno al cambio slide | `''` |
 | `GRADE` | l'inversione, in una riga | `invert(1) hue-rotate(180deg) saturate(.92) contrast(1.04)` |
 | `BRUSH_SIZE` | grandezza della punta, in % dell'altezza dell'immagine | `1.7` |
-| `BRUSH_DRY` | quanto asciuga in fretta: piu' alto = il tratto svanisce prima | `1.45` |
+| `BRUSH_DRY` | quanto asciuga in fretta: piu' alto = il tratto svanisce prima | `2.80` |
 | `VEIL_A` | il velo caldo dentro l'inchiostro. 0 = spento | `0.05` |
 
 Si provano dal vivo dalla console, senza ripubblicare:
