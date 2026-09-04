@@ -59,7 +59,7 @@
    DOVE VA
    Pages -> The Cape Studio -> Settings -> Custom code -> Before </body> tag,
    come ultima riga:
-     <script defer src="https://cdn.jsdelivr.net/gh/cash9086/cape-image-ink@v1.1.0/cape-image-ink.js"><\/script>
+     <script defer src="https://cdn.jsdelivr.net/gh/cash9086/cape-image-ink@v1.2.0/cape-image-ink.js"><\/script>
    (la barra rovesciata li' sopra serve solo qui dentro. Se questo file finisce
    incollato DENTRO un tag script invece che linkato, un tag di chiusura scritto
    per esteso lo chiuderebbe a meta' file: il browser prende il resto per testo
@@ -126,15 +126,21 @@ var VEIL     = '#F1ECE2';   /* la crema del sito                              */
 var VEIL_A   = 0.05;
 
 /* --- il pennello: stessa fisica del brush di cape-header.js -------------- */
-var BRUSH_SIZE   = 1.7;   /* GRANDEZZA della punta, in % dell'ALTEZZA
+var BRUSH_SIZE   = 1.5;   /* GRANDEZZA della punta, in % dell'ALTEZZA
                              dell'immagine. E' la manopola principale: per
                              togliere il 20% moltiplica per 0.8. Il passo del
-                             tratto si adegua da solo.                        */
+                             tratto si adegua da solo.
+                             Il pavimento vero non e' il gusto, e' il tetto di
+                             16 splat per frame in paint(): su una sciabolata
+                             veloce la spaziatura effettiva e' dist/16, non
+                             brushStep(), e quando supera il raggio la linea
+                             comincia a perlinare. A 1.5 il margine c'e' ancora;
+                             sotto 1.2, su una passata rapida, si vede.        */
 var BRUSH_AMT    = 0.34;  /* colorante per splat: piu' alto = tratto piu' pieno */
 var BRUSH_PULL   = 0.24;  /* quanta velocita' della mano passa al fluido. Alto =
                              l'inchiostro scappa avanti alla mano; basso = resta
                              incollato al puntatore.                          */
-var BRUSH_DRY    = 2.80;  /* quanto asciuga: piu' alto = il tratto svanisce prima.
+var BRUSH_DRY    = 3.20;  /* quanto asciuga: piu' alto = il tratto svanisce prima.
                              E' la manopola dell'AREA, non dello spessore. Il
                              colorante decade come e^(-BRUSH_DRY*t) e la maschera
                              lo tiene visibile finche' c > 0.197 (INK_K 2.6,
@@ -143,8 +149,8 @@ var BRUSH_DRY    = 2.80;  /* quanto asciuga: piu' alto = il tratto svanisce prim
                              aggiungendone altri ~0.5 — gironzolando col mouse
                              l'immagine finiva coperta, e a quel punto
                              l'inversione non e' piu' un segno sopra una
-                             fotografia, e' un filtro. A 2.8 la striscia vive
-                             ~0.73 s: resta un gesto dietro al cursore.
+                             fotografia, e' un filtro. A 3.2 la striscia vive
+                             ~0.64 s: resta un gesto dietro al cursore.
                              Tocca solo il colorante, non il campo di moto
                              (VEL_DISS e' separato), quindi il tratto conserva
                              identico il suo carattere — si muove, si arriccia e

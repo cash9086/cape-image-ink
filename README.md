@@ -47,7 +47,7 @@ quadro era coperto, e a quel punto l'inversione non si legge piu' come un segno
 sopra una fotografia: si legge come un filtro. E' lo stesso fallimento che qui
 sopra si argomenta sulla tinta, applicato all'area invece che al colore.
 
-A `2.80` la striscia vive **~0.73 s**. L'immagine e' il soggetto, l'inchiostro e'
+A `3.20` la striscia vive **~0.64 s**. L'immagine e' il soggetto, l'inchiostro e'
 il gesto: in ogni istante deve restare una striscia dietro al cursore, e la foto
 deve tornare sé stessa entro circa un secondo da quando la mano si ferma.
 
@@ -66,9 +66,23 @@ andato troppo su.
 |---|---|---|
 | `1.45` | ~1.4 s | com'era in `v1.0.0` |
 | `2.0` | ~1.0 s | assaggio |
-| **`2.80`** | **~0.73 s** | **da `v1.1.0`** |
+| `2.80` | ~0.73 s | `v1.1.0` |
+| **`3.20`** | **~0.64 s** | **da `v1.2.0`** |
 | `3.6` | ~0.56 s | secco, molto grafico |
 | `4.5` | ~0.45 s | oltre il tetto: il tratto si spezza |
+
+### E quanto e' grossa — `BRUSH_SIZE`
+
+L'altra meta' della copertura. `BRUSH_SIZE` e' il raggio in % dell'**altezza**
+dell'immagine, ed e' sceso da `1.7` a `1.5`: circa il 12% di raggio in meno,
+quindi quasi un quarto di area in meno a parita' di percorso. Il passo del
+tratto si adegua da solo (`brushStep()` e' una frazione fissa del raggio), per
+cui la densita' lungo la linea non cambia — cambia solo lo spessore.
+
+Il pavimento non e' il gusto, e' **il tetto di 16 splat per frame** in
+`paint()`: su una sciabolata veloce la spaziatura effettiva e' `dist/16`, non
+`brushStep()`, e quando quella supera il raggio la linea comincia a perlinare.
+A `1.5` il margine c'e' ancora; sotto `1.2`, su una passata rapida, si vede.
 
 ---
 
@@ -210,7 +224,7 @@ messo in **`cash9086/header`**, che e' gia' pubblico e serve gli altri due.
    come ultima riga:
 
 ```html
-<script defer src="https://cdn.jsdelivr.net/gh/cash9086/cape-image-ink@v1.1.0/cape-image-ink.js"></script>
+<script defer src="https://cdn.jsdelivr.net/gh/cash9086/cape-image-ink@v1.2.0/cape-image-ink.js"></script>
 ```
 
 Il CSS se lo scrive da solo: non c'e' niente da mettere nell'`<head>`. Non c'e'
@@ -219,7 +233,7 @@ nessun ordine da rispettare rispetto agli altri script della pagina.
 `SHA` sono i quaranta caratteri del commit: e' immutabile, quindi la cache di
 jsDelivr non e' mai un problema e non c'e' niente da svuotare. In sviluppo si
 puo' puntare a `@main` e svuotare a mano aprendo una volta
-`https://purge.jsdelivr.net/gh/cash9086/cape-image-ink@v1.1.0/cape-image-ink.js` — comodo
+`https://purge.jsdelivr.net/gh/cash9086/cape-image-ink@v1.2.0/cape-image-ink.js` — comodo
 mentre si prova, da non lasciare in produzione.
 
 ### Su quali immagini agisce
@@ -274,8 +288,8 @@ che si toccano davvero:
 | `NIB` | rimette il simbolo del pennello sotto la scritta | `false` |
 | `BUSY_SEL` | quando ritirare l'inchiostro. Vuoto = mai, nemmeno al cambio slide | `''` |
 | `GRADE` | l'inversione, in una riga | `invert(1) hue-rotate(180deg) saturate(.92) contrast(1.04)` |
-| `BRUSH_SIZE` | grandezza della punta, in % dell'altezza dell'immagine | `1.7` |
-| `BRUSH_DRY` | quanto asciuga in fretta: piu' alto = il tratto svanisce prima | `2.80` |
+| `BRUSH_SIZE` | grandezza della punta, in % dell'altezza dell'immagine | `1.5` |
+| `BRUSH_DRY` | quanto asciuga in fretta: piu' alto = il tratto svanisce prima | `3.20` |
 | `VEIL_A` | il velo caldo dentro l'inchiostro. 0 = spento | `0.05` |
 
 Si provano dal vivo dalla console, senza ripubblicare:
